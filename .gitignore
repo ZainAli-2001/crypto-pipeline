@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+*.pem
+.aws/
+.DS_Store
+
+# full data exports stay local; only data-sample/ is committed
+*.parquet
+!data-sample/*.parquet

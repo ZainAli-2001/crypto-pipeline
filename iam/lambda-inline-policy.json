@@ -1,0 +1,20 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "WriteSnapshots",
+			"Effect": "Allow",
+			"Action": "s3:PutObject",
+			"Resource": [
+				"arn:aws:s3:::<DATA_BUCKET>/raw/*",
+				"arn:aws:s3:::<DATA_BUCKET>/curated/*"
+			]
+		},
+		{
+			"Sid": "ReadApiKey",
+			"Effect": "Allow",
+			"Action": "ssm:GetParameter",
+			"Resource": "arn:aws:ssm:<REGION>:<ACCOUND_ID>:parameter/crypto/coingecko_api_key"
+		}
+	]
+}

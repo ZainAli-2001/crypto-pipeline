@@ -69,3 +69,49 @@ Problems and surprises from building and running the pipeline, in the order they
 **What I did.** Treat the weekly manual check (Cost Explorer by charge type, see `cost-log.md`) as the real safeguard, not the alerts.
 
 **Takeaway.** An alert that may not arrive isn't a control. Keep a manual check on a fixed day each week.
+
+## 10. Lambda's Duration metric hides cold-start cost
+
+**What happened.** The Duration metric averaged about 0.92 s per run, but billed
+duration averaged about 3.9 s (658,624 ms over 169 runs in Logs Insights).
+
+**Why.** Init time is billed but isn't part of the Duration metric. With an
+hourly schedule, nearly every run is a cold start, so init dominates.
+
+**What I did.** Computed GB-seconds from billed duration (about 329 over the
+first week at 512 MB) instead of from the metric. Logs Insights query:
+
+    filter @type = "REPORT"
+    | stats sum(@billedDuration) as billed_ms, count(*) as runs
+
+**Takeaway.** Read billed duration from the REPORT lines, not the Duration
+metric. The cost is still far inside the free tier, but the metric would have
+understated it by roughly 4x.
+
+## 11. Count one-off runs separately
+
+**What happened.** Logs Insights showed 169 runs while the Invocations metric
+and B1 showed 168 scheduled runs.
+
+**Why.** The extra REPORT line is the one-off `rebuild_from_raw` invocation
+(3,989 ms billed), which was real usage but not a scheduled snapshot.
+
+**What I did.** Logged 168 scheduled runs plus 1 rebuild, and split the
+GB-seconds (about 327.3 scheduled, 2.0 rebuild).
+
+**Takeaway.** Maintenance and test invocations land in the same logs as
+scheduled runs. Separate them in the cost log, or per-run figures drift.
+
+## 12. S3 BucketSizeBytes needs Average or Maximum, not Sum
+
+**What happened.** My first S3 readings were 143.9 MB for the data bucket and
+565,815 bytes for the results bucket, which was too high.
+
+**Why.** BucketSizeBytes is one data point per day. A Sum over the week adds
+seven daily sizes together instead of giving the current size.
+
+**What I did.** Re-read both buckets with the Maximum statistic and a 1-day
+period: 42.9 MB and 1.37 MB. The latest daily point can lag a day behind.
+
+**Takeaway.** For gauge-style metrics (sizes, counts of stored items), pick
+Average or Maximum. Sum only makes sense for counters such as requests.

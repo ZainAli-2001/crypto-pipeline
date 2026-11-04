@@ -16,7 +16,7 @@ Region: ap-southeast-2 · Started: 2026-10-28 · Starting credits: $140
 
 | Week | Checked | Cost export (CSV) | Athena B2 screenshot |
 |---|---|---|---|
-| 1 | 2026-11-04 | [csv](docs/cost-exports/2026-11-04-week1-cost-by-charge-type.csv) | [png](screenshots/04-athena/2026-11-04-week1-latest-snapshot-scan.png) |
+| 1 | 2026-11-04 | [csv](cost-exports/2026-11-04-week1-cost-by-charge-type.csv) | [png](screenshots/04-athena/2026-11-04-week1-latest-snapshot-scan.png) |
 | 2 | 2026-11-11 | | |
 
 ## Benchmark queries

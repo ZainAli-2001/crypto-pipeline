@@ -115,3 +115,19 @@ period: 42.9 MB and 1.37 MB. The latest daily point can lag a day behind.
 
 **Takeaway.** For gauge-style metrics (sizes, counts of stored items), pick
 Average or Maximum. Sum only makes sense for counters such as requests.
+
+## 13. Confirm which bucket a storage reading came from
+
+**What happened.** A 113,163-byte reading was taken from the S3 metrics graph
+and logged against the data bucket. It belonged to the results bucket, which
+is a different size, and nothing on screen made that obvious.
+
+**Why.** A metric graph shows whichever bucket and storage type are selected,
+so a reading can come from the wrong one without any warning.
+
+**What I did.** Matched the figure against the results bucket's object
+listing, which summed to about 109 KB before the 4 Nov check.
+
+**Takeaway.** Before logging a storage figure, check the BucketName and
+StorageType on the graph, then confirm it against the object listing for that
+same bucket.

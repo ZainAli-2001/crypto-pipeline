@@ -143,3 +143,17 @@ correct for its own window.
 **Takeaway.** Before reading a row as a day, check what its label groups by.
 For a month, the label is the first day of the month and the figure covers
 everything from then to the export's end date.
+
+## 15. Validate a metric against a direct count before trusting its trend
+
+**What happened.** Early S3 readings from the metric and from the console's
+object total disagreed, and the metric's 4 Nov value looked low against the
+next day's. Both could be right at different times, so neither could be used
+alone.
+
+**What I did.** Compared the object-level total with the metric on the same
+day. They matched in week 3, which made the object total the reference.
+
+**Takeaway.** When two sources disagree, don't pick the one that looks
+plausible. Check one against the other on the same day, and record which
+method you trust and why.

@@ -131,3 +131,15 @@ listing, which summed to about 109 KB before the 4 Nov check.
 **Takeaway.** Before logging a storage figure, check the BucketName and
 StorageType on the graph, then confirm it against the object listing for that
 same bucket.
+
+## 14. Check what a cost export's rows mean
+
+**What happened.** I described a November row in the cost export as a single
+day's usage, and then explained a change in its value as a restatement. The
+row is a month-to-date total for the period ending at the export's end date.
+The change was just the period growing, and the earlier week's figure had been
+correct for its own window.
+
+**Takeaway.** Before reading a row as a day, check what its label groups by.
+For a month, the label is the first day of the month and the figure covers
+everything from then to the export's end date.

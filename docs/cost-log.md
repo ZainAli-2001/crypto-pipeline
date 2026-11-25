@@ -4,13 +4,14 @@ Region: ap-southeast-2 · Started: 2026-10-28 · Starting credits: $140
 
 ## Weekly log
 
-| Week ending | Files | Lambda invocations | Lambda GB-seconds | S3 storage (GB) | S3 requests | Athena data scanned | Cumulative cost (to 11-17) | Credits remaining | Surprises |
+| Week ending | Files | Lambda invocations | Lambda GB-seconds | S3 storage (GB) | S3 requests | Athena data scanned | Cumulative cost (to 11-24) | Credits remaining | Surprises |
 |---|---|---|---|---|---|---|---|---|---|
 | 2026-10-29 (baseline) | - | - | - | - | - | - | - | $140.00 | |
 | 2026-11-04 | 168 | 168 scheduled (+1 rebuild) | ≈329.3 billed incl. init (≈327.3 scheduled, ≈2.0 one-off rebuild) | data 0.043 (metric, 4 Nov; low, see Notes), results 0.00011 | ≈336 (calculated) | B1: 16.57 KB, B2: 70.83 KB | Usage $0.00345, Credit -$0.00345, Net $0 | ≈$139.9965 (calculated) | 168 snapshots confirmed by B1. Billed ≈3.9 s/run vs ≈0.92 s Duration metric: cold-start init dominates. |
 | 2026-11-11 | 168 | 168 scheduled | ≈321.4 billed incl. init (≈3.8 s/run) | 0.104 (11 Nov, metric), results 0.00022 | ≈336 (calculated) | B1: 33.14 KB, B2: 87.47 KB | Usage $0.00592, Credit -$0.00592, Net $0 | ≈$139.9941 (calculated) | B1 scan doubled with file count (16.57 to 33.14 KB). B2 minus B1 steady at about 54 KB. Week 1 cost export was partial, see Notes. |
 | 2026-11-18 | 504 total (168 this week) | 168 scheduled | ≈315.4 billed incl. init (≈3.76 s/run) | 0.152 (18 Nov, object total, matches metric), results 0.00033 | ≈336 (calculated) | B1: 49.71 KB, B2: 104.01 KB | Usage $0.00978, Credit -$0.00978, Net $0 | ≈$139.9902 (calculated) | Billed time per run stable (3.8 to 3.76 s). B1 scan 33.14 to 49.71 KB as files went 336 to 504. B2 minus B1 steady at about 54 KB. |
-| 2026-11-25 | | | | | | | | | |
+| 2026-11-25 | 672 total (168 this week) | 168 scheduled | ≈317.5 billed incl. init (≈3.78 s/run) | data 0.206 (object total), results 0.00056 | ≈336 (calculated) | B1: 66.28 KB, B2: 120.51 KB | Usage $0.01373, Credit -$0.01373, Net $0 | ≈$139.9863 (calculated) | Billed time per run flat for four weeks (3.8 to 3.78 s). Data metric lagged about 2.5 days' growth this week. B1 scan up with file count (49.71 to 66.28 KB). |
+| 2026-11-27 | | | | | | | | | |
 
 ## Evidence
 
@@ -19,7 +20,8 @@ Region: ap-southeast-2 · Started: 2026-10-28 · Starting credits: $140
 | 1 | 2026-11-04 | [csv](cost-exports/2026-11-04-week1-cost-by-charge-type.csv) | [png](screenshots/04-athena/2026-11-04-week1-latest-snapshot-scan.png) |
 | 2 | 2026-11-11 | [csv](cost-exports/2026-11-11-week2-cost-by-charge-type.csv)  | [png](screenshots/04-athena/2026-11-11-week2-latest-snapshot-scan.png) |
 | 3 | 2026-11-18 | [csv](cost-exports/2026-11-18-week3-cost-by-charge-type.csv) | [png](screenshots/04-athena/2026-11-18-week3-latest-snapshot-scan.png) |
-| 4 | 2026-11-25 | | |
+| 4 | 2026-11-25 | [csv](cost-exports/2026-11-25-week4-cost-by-charge-type.csv) | [png](screenshots/04-athena/2026-11-25-week4-latest-snapshot-scan.png) |
+| 4 | 2026-11-27 | | |
 
 ## Benchmark queries
 
@@ -40,6 +42,8 @@ Region: ap-southeast-2 · Started: 2026-10-28 · Starting credits: $140
 | 2026-11-11 | B2 | 87.47 KB | 1.489 s |
 | 2026-11-18 | B1 | 49.71 KB | 622 ms |
 | 2026-11-18 | B2 | 104.01 KB | 1.376 s |
+| 2026-11-25 | B1 | 66.28 KB | 1.412 s |
+| 2026-11-25 | B2 | 120.51 KB | 1.436 s |
 
 ## Notes
 
@@ -55,23 +59,22 @@ Region: ap-southeast-2 · Started: 2026-10-28 · Starting credits: $140
   13:05 UTC on the check date. S3 storage (GB) is accumulated number while 
   rest are weekly. Credits remaining is calculated (starting credits minus 
   credit applied), not read from the credits page, which rounds.
-- S3 storage: object-level total (Calculate total size on raw/ and curated/),
-  cross-checked against the BucketSizeBytes metric (Maximum, 1-day). The
-  metric may lag by a day.
-- S3 data bucket readings: the 4 Nov metric (42.9 MB) appears low against the
-  5 Nov reading (58.3 MB). Week 3's object total matched the metric, which
-  validates the method going forward. Earlier figures are kept as read and
-  not restated.
+- S3 storage: the object total (Calculate total size on `raw/` and `curated/`,
+  selected together) is the reference. The BucketSizeBytes metric (Maximum,
+  1-day, StandardStorage) is a cross-check only. Its lag varies: it matched
+  on 18 Nov, but was about 19.5 MB low on 25 Nov.
 
 | Week | Cost range (UTC days) | Readings taken (UTC) |
 |---|---|---|
 | 1 | 2026-10-28 to 2026-11-03 | 2026-11-04 13:05 |
 | 2 | 2026-10-28 to 2026-11-10 | 2026-11-11 13:05 |
- 3 | 2026-10-28 to 2026-11-17 | 2026-11-18 13:05 |
+| 3 | 2026-10-28 to 2026-11-17 | 2026-11-18 13:05 |
+| 4 | 2026-10-28 to 2026-11-24 | 2026-11-25 13:05 |
 
 - Cost (UTC days 2026-10-28 to 2026-11-03, by charge type, from CSV export): Usage $0.0034548881, Credit -$0.0034548883, Total -$0.0000000002 (rounding residue, effectively $0). Credits cover 100% of usage.
 - Cost (UTC days 2026-10-28 to 2026-11-10, by charge type, from CSV export): Usage $0.005921261, Credit -$0.005921261, Total -$0.0000000006 (rounding residue, effectively $0). Credits cover 100% of usage. 
-- Cost (UTC days 2026-10-28 to 2026-11-17, by charge type, from CSV export): Usage $0.009784019, Credit -$0.009784019, Total -$0.0000000013 (rounding residue, effectively $0). Credits cover 100% of usage. 
+- Cost (UTC days 2026-10-28 to 2026-11-17, by charge type, from CSV export): Usage $0.009784019, Credit -$0.009784020, Total -$0.0000000013 (rounding residue, effectively $0). Credits cover 100% of usage.
+- Cost (UTC days 2026-10-28 to 2026-11-24, by charge type, from CSV export): Usage $0.013731069, Credit -$0.013731070, Total -$0.0000000016 (rounding residue, effectively $0). Credits cover 100% of usage.
 
 **Budgets**
 

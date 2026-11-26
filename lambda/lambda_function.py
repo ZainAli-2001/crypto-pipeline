@@ -72,7 +72,10 @@ def fetch_markets():
     headers = {"x-cg-demo-api-key": get_api_key(), "accept": "application/json"}
     for attempt in range(1, MAX_ATTEMPTS + 1):
         resp = requests.get(BASE_URL, params=PARAMS, headers=headers, timeout=15)
+        print(f"CoinGecko HTTP status: {resp.status_code}")
+
         if resp.status_code == 200:
+            print("CoinGecko request successful")
             return resp.json()
         if resp.status_code == 429 and attempt < MAX_ATTEMPTS:
             wait = min(int(resp.headers.get("Retry-After", 2 ** attempt)), 10)
